@@ -55,6 +55,7 @@ class Time {
 		
 		this.delta = now - this.previous;
 		this.elapsed = now - this.start;
+		// this.start = now
 		this.previous = now;
 	}
 	
@@ -278,7 +279,10 @@ document.body.appendChild(canvas);
 window.onresize = resize;
 resize();
 
-setInterval(addRocket, 2000);
+setInterval(()=>{
+	addRocket();
+	if(rockets.length>40){rockets=[]};
+}, 2000);
 render();</script>
 <div style="text-align:center;">
 <p>更多源码：<a href="http://down.admin5.com/" target="_blank">A5源码</a></p>

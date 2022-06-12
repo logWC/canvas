@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试学习粒子烟花</title>
+</head>
+<body>
+    <button onclick="test(event)">按钮</button>
+    <script>
+        let getTrustParticleFactory = function(baseHue){
+            function getColor(){
+                console.log('触发了getColor函数')
+                const hue = Math.floor(Math.random()*15+30);
+                return `hsl(${hue},100%,75%)`;
+            }
+
+            return function(parent){
+                console.log(getColor());
+                console.log('触发了return',parent)
+                return 123
+                // const position = this.position.clone()
+                // const velocity = this.velocity.clone().multiplyScalar(-.1);
+                // velocity.x += (Math.random()-.5)*80;
+                // const color = getColor();
+                // const radius = 1 + Math.random();
+                // const lifetime = .5 + Math.random()*.5;
+                // const mass = .01;
+                // return new Particle(position,velocity,color,radius,lifetime,mass)
+            }
+        }
+
+        let test = getTrustParticleFactory()
+    </script>
+</body>
+</html>
