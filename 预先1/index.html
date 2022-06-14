@@ -45,7 +45,7 @@ class Time {
 		const now = Time.now();
 		
 		this.delta = 0;
-		this.elapsed = 0;
+		// this.elapsed = 0;
 		this.start = now;
 		this.previous = now;
 	}
@@ -54,8 +54,7 @@ class Time {
 		const now = Time.now();
 		
 		this.delta = now - this.previous;
-		this.elapsed = now - this.start;
-		// this.start = now
+		// this.elapsed = now - this.start;
 		this.previous = now;
 	}
 	
@@ -63,7 +62,7 @@ class Time {
 		return Date.now() / 1000;
 	}
 }
-
+// 粒子position、velocity、color、radius、lifetime、mass赋值
 class Particle {
 	constructor(position, velocity = new Vector2, color = 'white', radius = 1, lifetime = 1, mass = 1) {
 		this.position = position;
@@ -73,7 +72,7 @@ class Particle {
 		this.lifetime = lifetime;
 		this.mass = mass;
 		
-		this.isInCanvas = true;
+		// this.isInCanvas = true;
 		this.createdOn = Time.now();
 	}
 	
@@ -90,10 +89,11 @@ class Particle {
 		const remainingLifetime = this.getRemainingLifetime();
 		
 		if (!remainingLifetime) return;
-		
+		// 粒子随着生存时间而变小
 		const radius = this.radius * remainingLifetime;
-		
+		// 粒子透明度变小，未知
 		context.globalAlpha = remainingLifetime;
+		// 未知
 		context.globalCompositeOperation = 'lighter';
 		context.fillStyle = this.color;
 		
@@ -101,7 +101,7 @@ class Particle {
 		context.arc(this.position.x, this.position.y, radius, 0, Math.PI * 2);
 		context.fill();
 	}
-	
+	// 获取剩余生存时间
 	getRemainingLifetime() {
 		const elapsedLifetime = Time.now() - this.createdOn;
 		return Math.max(0, this.lifetime - elapsedLifetime) / this.lifetime;
@@ -110,7 +110,9 @@ class Particle {
 
 Particle.GRAVITATION = new Vector2(0, 9.81);
 
+// 更新粒子
 class Trail extends Particle {
+	// 用于爆炸粒子
 	constructor(childFactory, position, velocity = new Vector2, lifetime = 1, mass = 1) {
 		super(position, velocity);
 		
@@ -118,19 +120,19 @@ class Trail extends Particle {
 		this.children = [];
 		this.lifetime = lifetime;
 		this.mass = mass;
-		
-		this.isAlive = true;
+
+		this.isAlive = true;  // 用于粒子过滤
 	}
 	
 	update(time) {
 		super.update(time);
 		
-		// Add a new child on every frame
+		// 在每个帧上添加新的子级，当粒子已被标记消失 并 生存时间小于0
 		if (this.isAlive && this.getRemainingLifetime()) {
 			this.children.push(this.childFactory(this));
 		}
 		
-		// Remove particles that are dead
+		// 清除死掉的粒子，粒子还属于Trail的则判断idAlive返回，否则判断生存时间返回
 		this.children = this.children.filter(function(child) {
 			if (child instanceof Trail) {
 				return child.isAlive;
@@ -139,12 +141,12 @@ class Trail extends Particle {
 			return child.getRemainingLifetime();
 		});
 		
-		// Kill trail if all particles fade away
+		// 如果所有粒子消失，则清除痕迹
 		if (!this.children.length) {
 			this.isAlive = false;
 		}
 		
-		// Update particles
+		// 更新粒子
 		this.children.forEach(function(child) {
 			child.update(time);
 		});
@@ -157,7 +159,7 @@ class Trail extends Particle {
 		});
 	}
 }
-
+// 粒子
 class Rocket extends Trail {
 	constructor(childFactory, explosionFactory, position, velocity = new Vector2) {
 		super(childFactory, position, velocity);
@@ -167,6 +169,7 @@ class Rocket extends Trail {
 	}
 	
 	update(time) {
+		// 用于爆炸粒子
 		if (this.getRemainingLifetime() && this.velocity.y > 0) {
 			this.explosionFactory(this);
 			this.lifetime = 0;
@@ -199,7 +202,7 @@ const getTrustParticleFactory = function(baseHue) {
 		return new Particle(position, velocity, color, radius, lifetime, mass);
 	};
 };
-
+// 爆炸粒子工厂
 const getExplosionFactory = function(baseHue) {
 	function getColor() {
 		const hue = Math.floor(baseHue + Math.random() * 15) % 360;
@@ -227,7 +230,7 @@ const getExplosionFactory = function(baseHue) {
 		const velocity = new Vector2(Math.cos(direction) * force, Math.sin(direction) * force);
 		const lifetime = .5 + Math.random();
 		const mass = .075;
-
+		// 首次出现更新
 		return new Trail(getChildFactory(), position, velocity, lifetime, mass);
 	}
 	
@@ -243,14 +246,19 @@ const addRocket = function() {
 	const trustParticleFactory = getTrustParticleFactory();
 	const explosionFactory = getExplosionFactory(Math.random() * 360);
 	
+	// 粒子出现位置
 	const position = new Vector2(Math.random() * canvas.width, canvas.height);
+	// 粒子发射速度
 	const thrust = window.innerHeight * .75;
 	const angle = Math.PI / -2 + (Math.random() - .5) * Math.PI / 8;
 	const velocity = new Vector2(Math.cos(angle) * thrust, Math.sin(angle) * thrust);
+	// 未知
 	const lifetime = 3;
 	
+	// 添加粒子
 	rockets.push(new Rocket(trustParticleFactory, explosionFactory, position, velocity, lifetime));
 	
+	// 过滤粒子
 	rockets = rockets.filter(function(rocket) {
 		return rocket.isAlive;
 	});
@@ -258,7 +266,7 @@ const addRocket = function() {
 
 const render = function() {
 	requestAnimationFrame(render);
-	
+	// 时间更新
 	time.update();
 	context.clearRect(0, 0, canvas.width, canvas.height);
 	
