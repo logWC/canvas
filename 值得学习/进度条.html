@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <canvas id="canvas" width="300" height="300"></canvas>
+    <script>
+        let i=0;
+        let canvas = document.getElementById('canvas').getContext('2d');
+        function draw(){
+            i=i>=100?1:i+1;
+            canvas.clearRect(0,0,300,300);
+            canvas.fillStyle = 'orange';
+            canvas.fillRect(0,0,300,300)
+
+            canvas.save();
+
+            canvas.translate(150,150);
+            canvas.fillStyle = 'yellow'
+            canvas.font = "25px serif";
+            canvas.textAlign = 'center';
+            canvas.textBaseline = 'middle';
+            canvas.fillText(`${i}%`,0,0);
+            canvas.rotate(-Math.PI/2);
+
+            canvas.beginPath();
+            canvas.strokeStyle = 'rgba(128,128,128,0.5)';
+            canvas.lineWidth = '5';
+            canvas.arc(0,0,50,0,Math.PI*2,false);
+            canvas.stroke();
+            canvas.beginPath();
+            canvas.strokeStyle = 'yellow';
+            canvas.arc(0,0,50,0,i/(Math.PI*5),false);
+            canvas.rotate(i/(Math.PI*5));
+            canvas.arc(50,0,4,0,Math.PI*2,false)
+            canvas.stroke();
+
+            canvas.beginPath();
+            canvas.fillStyle = 'rgba(128,128,128,0.5)';
+            canvas.arc(50,0,3,0,Math.PI*2,false);
+            canvas.fill();
+
+            canvas.restore();
+        }
+        setInterval(draw,100)
+        console.log(0%5)
+    </script>
+</body>
+</html>
