@@ -23,8 +23,8 @@
         let width = 500,height = 500;
         c.lineWidth = 1;
         c.strokeStyle = 'red';
-        let gravity = 0.6;
-        let num = 10;
+        let gravity = 0.3;
+        let num = 3;
 
 
 
@@ -32,6 +32,7 @@
             this.x = x;
             this.y = y;
             this.r = r;
+            this.b = y
             this.velocity = {
                 x:0,
                 y:0
@@ -43,7 +44,7 @@
             c.stroke();
         }
         circle.prototype.update = function(){
-            if(this.y + this.velocity.y < height-111){
+            if(this.y + this.velocity.y < this.b){
                 this.velocity.y += gravity
             }else{
                 this.velocity.y = 0
@@ -56,10 +57,10 @@
             this.y+=this.velocity.y;
             this.draw();
         }
-        let cir = new circle(22,389,10);
+        let cir = new circle(22,379,20);
 
         const cursorKeys = {
-            up:{boo:false,i:1},
+            up:{boo:false,i:0},
             down:{boo:false},
             left:{boo:false},
             right:{boo:false}
@@ -106,14 +107,14 @@
             c.clearRect(0,0,width,height);
 
             if(cursorKeys.up.i == 1){
-                cir.velocity.y = -num;
+                cir.velocity.y = -2*num;
                 cursorKeys.up.i = 3;
             }
 
             if(cursorKeys.left.boo){
-                cir.velocity.x = -num/2;
+                cir.velocity.x = -num;
             }else if(cursorKeys.right.boo){
-                cir.velocity.x = num/2;
+                cir.velocity.x = num;
             }else{
                 cir.velocity.x = 0;
             }
