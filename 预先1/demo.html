@@ -4,34 +4,127 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>测试学习粒子烟花</title>
+    <title>Document</title>
+    <style>
+        body{
+            margin: 0;
+        }
+        canvas{
+            /* display: block; */
+            margin: 5% auto;
+            border: 1px solid red;
+        }
+    </style>
 </head>
 <body>
-    <button onclick="test(event)">按钮</button>
+    <canvas id="canvas" width="500" height="500"></canvas>
     <script>
-        let getTrustParticleFactory = function(baseHue){
-            function getColor(){
-                console.log('触发了getColor函数')
-                const hue = Math.floor(Math.random()*15+30);
-                return `hsl(${hue},100%,75%)`;
-            }
+        let c = document.getElementById('canvas').getContext('2d');
+        let width = 500,height = 500;
+        c.lineWidth = 1;
+        c.strokeStyle = 'red';
+        let gravity = 0.6;
+        let num = 10;
 
-            return function(parent){
-                console.log(getColor());
-                console.log('触发了return',parent)
-                return 123
-                // const position = this.position.clone()
-                // const velocity = this.velocity.clone().multiplyScalar(-.1);
-                // velocity.x += (Math.random()-.5)*80;
-                // const color = getColor();
-                // const radius = 1 + Math.random();
-                // const lifetime = .5 + Math.random()*.5;
-                // const mass = .01;
-                // return new Particle(position,velocity,color,radius,lifetime,mass)
+
+
+        function circle(x,y,r){
+            this.x = x;
+            this.y = y;
+            this.r = r;
+            this.velocity = {
+                x:0,
+                y:0
             }
         }
+        circle.prototype.draw = function(){
+            c.beginPath();
+            c.arc(this.x,this.y,this.r,0,Math.PI*2,false);
+            c.stroke();
+        }
+        circle.prototype.update = function(){
+            if(this.y + this.velocity.y < height-111){
+                this.velocity.y += gravity
+            }else{
+                this.velocity.y = 0
+                cursorKeys.up.i = cursorKeys.up.i==2?0:cursorKeys.up.i;
+            }
+            if(this.velocity.y==0){
+                console.log(this.y)
+            }
+            this.x+=this.velocity.x;
+            this.y+=this.velocity.y;
+            this.draw();
+        }
+        let cir = new circle(22,389,10);
 
-        let test = getTrustParticleFactory()
-    </script>
+        const cursorKeys = {
+            up:{boo:false,i:1},
+            down:{boo:false},
+            left:{boo:false},
+            right:{boo:false}
+        }
+        window.addEventListener('keydown',function(e){
+            switch (e.key) {
+                case 'ArrowUp':
+                    cursorKeys.up.i = cursorKeys.up.i==0?1:3
+                    break;
+                case 'ArrowDown':
+                    cursorKeys.down.boo = true;
+                    break;
+                case 'ArrowLeft':
+                    cursorKeys.left.boo = true;
+                    break;
+                case 'ArrowRight':
+                    cursorKeys.right.boo = true;
+                    break;
+                default:
+                    break;
+            }
+        })
+        window.addEventListener('keyup',function(e){
+            switch (e.key) {
+                case 'ArrowUp':
+                        cursorKeys.up.i = 2;
+                    break;
+                case 'ArrowDown':
+                    cursorKeys.down.boo = false;
+                    break;
+                case 'ArrowLeft':
+                    cursorKeys.left.boo = false;
+                    break;
+                case 'ArrowRight':
+                    cursorKeys.right.boo = false;
+                    break;
+                default:
+                    break;
+            }
+        })
+        
+        function init(){
+            window.requestAnimationFrame(init);
+            c.clearRect(0,0,width,height);
+
+            if(cursorKeys.up.i == 1){
+                cir.velocity.y = -num;
+                cursorKeys.up.i = 3;
+            }
+
+            if(cursorKeys.left.boo){
+                cir.velocity.x = -num/2;
+            }else if(cursorKeys.right.boo){
+                cir.velocity.x = num/2;
+            }else{
+                cir.velocity.x = 0;
+            }
+
+            cir.update();
+            c.beginPath();
+            c.moveTo(5,400);
+            c.lineTo(495,400);
+            c.stroke();
+        }
+        window.requestAnimationFrame(init)
+        </script>
 </body>
 </html>

@@ -42,19 +42,17 @@ class Vector2 {
 
 class Time {
 	constructor() {
-		const now = Time.now();
-		
+		// 当时间差值到了就删掉元素
 		this.delta = 0;
-		// this.elapsed = 0;
-		this.start = now;
-		this.previous = now;
+		this.previous = Time.now();
 	}
 	
 	update() {
+		// 获取新时间
 		const now = Time.now();
-		
+		// 获取时间差值(新时间与旧时间)
 		this.delta = now - this.previous;
-		// this.elapsed = now - this.start;
+		// 存储新时间
 		this.previous = now;
 	}
 	
@@ -64,6 +62,7 @@ class Time {
 }
 // 粒子position、velocity、color、radius、lifetime、mass赋值
 class Particle {
+	// 初始底部位置、速度
 	constructor(position, velocity = new Vector2, color = 'white', radius = 1, lifetime = 1, mass = 1) {
 		this.position = position;
 		this.velocity = velocity;
@@ -72,7 +71,6 @@ class Particle {
 		this.lifetime = lifetime;
 		this.mass = mass;
 		
-		// this.isInCanvas = true;
 		this.createdOn = Time.now();
 	}
 	
@@ -120,7 +118,6 @@ class Trail extends Particle {
 		this.children = [];
 		this.lifetime = lifetime;
 		this.mass = mass;
-
 		this.isAlive = true;  // 用于粒子过滤
 	}
 	
@@ -246,17 +243,15 @@ const addRocket = function() {
 	const trustParticleFactory = getTrustParticleFactory();
 	const explosionFactory = getExplosionFactory(Math.random() * 360);
 	
-	// 粒子出现位置
+	// 粒子出现在底部的位置
 	const position = new Vector2(Math.random() * canvas.width, canvas.height);
 	// 粒子发射速度
 	const thrust = window.innerHeight * .75;
 	const angle = Math.PI / -2 + (Math.random() - .5) * Math.PI / 8;
 	const velocity = new Vector2(Math.cos(angle) * thrust, Math.sin(angle) * thrust);
-	// 未知
-	const lifetime = 3;
 	
 	// 添加粒子
-	rockets.push(new Rocket(trustParticleFactory, explosionFactory, position, velocity, lifetime));
+	rockets.push(new Rocket(trustParticleFactory, explosionFactory, position, velocity));
 	
 	// 过滤粒子
 	rockets = rockets.filter(function(rocket) {
