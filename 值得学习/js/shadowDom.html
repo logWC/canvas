@@ -5,118 +5,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <style>
-        body{
-            margin: 0;
-        }
-        #div{
-            width: 500px;
-            height: 500px;
-            background-color: antiquewhite;
-            overflow: auto;
-            margin: 0 auto;
-            padding: 10px;
-            border: 1px solid red;
-        }
-        span{
-            background-color: aqua;
-        }
-        #slider{
-            width: 140px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #fbe;
-        }
-    </style>
 </head>
 <body>
-    <label for="checkbox">
-        这是
-        <input type="checkbox" id="checkbox" value="1" />
-    </label>
-    <div id="slider">SLIDE ME</div>
-    <button id="button">按钮</button>
-    <div id="div"></div>
     <script>
-        let div = document.getElementById('div');
-        let shadowRoot = div.attachShadow({mode:"closed",delegatesFocus:true})
-        let span = document.createElement('span');
-        span.innerHTML = 'shadow dom'
-        shadowRoot.appendChild(span)
-        let input = document.createElement('input')
-        shadowRoot.appendChild(input)
-        let div_2 = document.createElement('div')
-        div_2.style = 'height:600px';
-        shadowRoot.appendChild(div_2)
-
-        function wc(params) {
-            console.log('wc')
-        }
-        let event_1 = new Event('ab')
-        div.addEventListener('ab',wc)
-        let boo = !div.dispatchEvent(event_1)
-        console.log('boo',boo)
-        div.removeEventListener('ab',wc)
-        boo = !div.dispatchEvent(event_1)
-        console.log('boo',boo)
-        console.log(div.shadowRoot)
-        console.log(shadowRoot)
-        console.log(div.clientHeight)
-        console.log(div.scrollHeight)
-        console.log(div.offsetHeight)
-
-        function simulateClick() {
-            var evt = new MouseEvent("dblclick", {
-                bubbles: true,
-                cancelable: true,
-                view: window,
-            });
-            var cb = document.getElementById("checkbox"); //element to click on
-            cb.ondblclick = function(){
-                console.log('触发了双击')
+        var wc = function(e){
+            this.a = 1
+            var ab = function (){
+                a = 2
+                console.log(this.a)
             }
-            var canceled = !cb.dispatchEvent(evt);
-            if(canceled) {
-                // A handler called preventDefault
-                alert("canceled");
-            } else {
-                // None of the handlers called preventDefault
-                alert("not canceled");
-                console.log(canceled)
-            }
+            ab()
         }
-        document.getElementById("button").addEventListener('click', simulateClick);
-
-
-
-        function beginSliding(e) {
-            slider.onpointermove = slide;
-            // 按住时，指针即便离开了元素也会触发move事件
-            slider.setPointerCapture(e.pointerId);
-        }
-
-        function stopSliding(e) {
-            slider.onpointermove = null;
-            slider.releasePointerCapture(e.pointerId);
-        }
-
-        function slide(e) {
-            slider.style.transform = `translate(${e.clientX - 70}px)`;
-        }
-
-        const slider = document.getElementById('slider');
-
-        slider.onpointerdown = beginSliding;
-        slider.onpointerup = stopSliding;
-        
-        let body = document.body;
-        body.oncontextmenu = function(e){
-            console.log('body')
-            e.preventDefault();
-        }
-        document.designMode = 'on'
+        wc()
+        console.log(a)
     </script>
 </body>
 </html>
